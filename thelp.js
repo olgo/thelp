@@ -1,19 +1,31 @@
-    
+
+var translate = [];
+
 $(document).ready( function () {
-    console.log("start!");
 
-        var all = document.body.childNodes;;
+    var all = document.body.childNodes;;
 
-        for(var i=0; i < all.length; i++){
-            searchNode(all[i]);
-        }
+    for(var i=0; i < all.length; i++){
+        searchNode(all[i]);
+    }
+
+    var translateJSON = {};
+    for(var i=0; i < translate.length; i++){
+        translate[i] = translate[i].trim('&nbsp;');
+        translate[i] = translate[i].trim('\n');
+        translateJSON['tid' + i] = translate[i];
+    }
+
+    console.log(JSON.stringify(translateJSON));
     
-    console.log("end!");
+    console.log("done!");
 });
 
 function searchNode(node) {
 
-    nodeValue(node);
+    if(node.childNodes.length == 0){
+        nodeValue(node);
+    }
 
     for(var i=0; i < node.childNodes.length; i++){
         searchNode(node.childNodes[i]);
@@ -21,10 +33,11 @@ function searchNode(node) {
 }
 
 function nodeValue(node) {
-    console.log(node.nodeType);
-    if(node.nodeValue != null && node.nodeValue != '') {
-        console.log("nodeVal: " + node.nodeValue);
-    }else{
-        //console.log("no node value");
+    if(node.nodeValue != null){
+        if( node.nodeName != 'SCRIPT'
+            && node.nodeName != '#comment'
+            && node.nodeValue.trim() != '') {
+            translate.push(node.nodeValue);
+        }
     }
 }
